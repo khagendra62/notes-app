@@ -13,12 +13,18 @@
     <div class="flex flex-col items-center p-4 h-screen w-screen">
         <h1 class="text-5xl font-bold">Welcome to Note App</h1>
         <div class="flex flex-col gap-2 py-4">
-            <input type="text" placeholder="Enter your title" class="input input-bordered w-full max-w-xs" />
-            <textarea class="textarea textarea-bordered" placeholder="Enter Text"></textarea>
-            <button class="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add</button>
+            <input id="titleInput" type="text" placeholder="Enter your title"
+                class="input input-bordered w-full max-w-xs" />
+            <textarea id="textInput" class="textarea textarea-bordered" placeholder="Enter Text"></textarea>
+            <button onclick="handleAdd()" class="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Add</button>
+        </div>
+        <div id="cardsContainer">
+
         </div>
 
     </div>
+    <script src="./app.js"></script>
+
 </body>
 
 </html>

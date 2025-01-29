@@ -9,7 +9,7 @@ const handleAdd = () => {
     alert("The title must be more then 4 and less than 20 letter long.");
     return;
   }
-  if (text.length < 25 || text.length > 75) {
+  if (text.length < 25 || text.length > 150) {
     alert("The description must be more then 25 and less than 75 letter long.");
     return;
   }

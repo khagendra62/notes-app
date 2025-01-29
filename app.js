@@ -1,94 +1,85 @@
-const titleInput = document.getElementById("titleInput")
-const textInput = document.getElementById("textInput")
-const cardsContainer = document.getElementById("cardsContainer")
-// const cardsContainer = document.querySelector("#cardsContainer")
+const titleInput = document.getElementById("titleInput");
+const textInput = document.getElementById("textInput");
+const cardsContainer = document.getElementById("cardsContainer");
 
-function handleAdd() {
-    const title = titleInput.value
-    const text = textInput.value
+const handleAdd = () => {
+  const title = titleInput.value;
+  const text = textInput.value;
+  if (title.length < 4 || title.length > 20) {
+    alert("The title must be more then 4 and less than 20 letter long.");
+    return;
+  }
+  if (text.length < 25 || text.length > 75) {
+    alert("The description must be more then 25 and less than 75 letter long.");
+    return;
+  }
+  createCard(title, text);
+};
 
-    //     <div class="card bg-base-100 w-96 shadow-xl">
-    //         <div class="card-body">
-    //             <h2 class="card-title">Card title!</h2>
-    //             <p>If a dog chews shoes whose shoes does he choose?</p>
-    //             <div class="card-actions justify-end">
-    //                 <button class="btn btn-primary">Buy Now</button>
-    //                 <label class="label cursor-pointer">
-    //                      <span class="label-text">Remember me</span>
-    //                      <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
-    //                  </label>
-    //             </div>
-    //         </div>
-    //     </div>
+const createCard = (title, text) => {
+  const buttonElement = document.createElement("button");
+  buttonElement.innerText = "remove";
+  buttonElement.classList.add("btn", "btn-primary", "btn-xs", "md:btn-sm");
 
-    const buttonElement = document.createElement("button")
-    buttonElement.innerText = "remove"
-    buttonElement.classList.add("btn", "btn-primary")
+  buttonElement.onclick = (event) =>
+    event.target.parentElement.parentElement.remove();
 
-    buttonElement.onclick = function (event) {
-        const currentCardBody = event.target.parentElement.parentElement
-        currentCardBody.remove()
+  const buttonDiv = document.createElement("div");
+  buttonDiv.classList.add("card-actions", "justify-between");
+  buttonDiv.appendChild(buttonElement);
+
+  const paragraphElement = document.createElement("p");
+  paragraphElement.innerText = text;
+
+  const checkbox = document.createElement("input");
+  checkbox.classList.add("checkbox", "checkbox-primary");
+  checkbox.type = "checkbox";
+
+  const headingElement = document.createElement("h2");
+  headingElement.classList.add("card-title");
+  headingElement.innerText = title;
+
+  const headingDiv = document.createElement("div");
+  headingDiv.classList.add("flex", "gap-2", "items-center");
+  headingDiv.appendChild(checkbox);
+  headingDiv.appendChild(headingElement);
+
+  const cardBodyDiv = document.createElement("div");
+  cardBodyDiv.classList.add("card-body");
+  cardBodyDiv.appendChild(headingDiv);
+  cardBodyDiv.appendChild(paragraphElement);
+  cardBodyDiv.appendChild(buttonDiv);
+
+  checkbox.onchange = (event) => {
+    const isChecked = event.target.checked;
+
+    const currentCardBody =
+      event.target.parentElement.parentElement.parentElement;
+
+    const currentCardTitle = currentCardBody.querySelector(".card-title");
+    const currentCardPara = currentCardBody.querySelector("p");
+
+    if (isChecked) {
+      currentCardTitle.style.textDecoration = "line-through";
+      currentCardPara.style.textDecoration = "line-through";
+    } else {
+      currentCardTitle.style.textDecoration = "none";
+      currentCardPara.style.textDecoration = "none";
     }
+  };
 
-    const checkboxInput = document.createElement("input")
-    checkboxInput.type = "checkbox"
-    checkboxInput.classList.add("checkbox", "checkbox-primary")
+  const outerDiv = document.createElement("div");
+  outerDiv.classList.add(
+    "card",
+    "bg-neutral",
+    "w-full",
+    "md:w-96",
+    "shadow-xl"
+  );
+  outerDiv.appendChild(cardBodyDiv);
 
-    const checkboxSpan = document.createElement("span")
-    checkboxSpan.innerText = "Mark as done"
-    checkboxSpan.classList.add("label-text")
+  cardsContainer.appendChild(outerDiv);
 
-    checkboxInput.onchange = function (event) {
-        const isChecked = event.target.checked
-
-        const currentCardBody = event.target.parentElement.parentElement.parentElement
-
-        // const currentCardTitle = currentCardBody.getElementsByClassName("card-title")[0]
-        const currentCardTitle = currentCardBody.querySelector(".card-title")
-        const currentCardPara = currentCardBody.querySelector("p")
-
-        if (isChecked) {
-            currentCardTitle.style.textDecoration = "line-through"
-            currentCardPara.style.textDecoration = "line-through"
-        } else {
-            currentCardTitle.style.textDecoration = "none"
-            currentCardPara.style.textDecoration = "none"
-        }
-    }
-
-    const labelElement = document.createElement("label")
-    labelElement.classList.add("label", "cursor-pointer")
-    labelElement.appendChild(checkboxSpan)
-    labelElement.appendChild(checkboxInput)
-
-    const buttonDiv = document.createElement("div")
-    buttonDiv.classList.add("card-actions", "justify-between")
-    buttonDiv.appendChild(buttonElement)
-    buttonDiv.appendChild(labelElement)
-
-    const paragraphElement = document.createElement("p")
-    paragraphElement.innerText = text
-
-    const headingElement = document.createElement("h2")
-    headingElement.classList.add("card-title")
-    headingElement.innerText = title
-
-    const cardBodyDiv = document.createElement("div")
-    cardBodyDiv.classList.add("card-body")
-    cardBodyDiv.appendChild(headingElement)
-    cardBodyDiv.appendChild(paragraphElement)
-    cardBodyDiv.appendChild(buttonDiv)
-
-    const outerDiv = document.createElement("div")
-    outerDiv.classList.add("card", "bg-base-100", "w-96", "shadow-xl")
-    outerDiv.appendChild(cardBodyDiv)
-
-    cardsContainer.appendChild(outerDiv)
-
-    clearInputs()
-}
-
-function clearInputs() {
-    titleInput.value = ""
-    textInput.value = ""
-}
+  titleInput.value = "";
+  textInput.value = "";
+};

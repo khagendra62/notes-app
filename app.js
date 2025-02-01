@@ -5,15 +5,19 @@ const cardsContainer = document.getElementById("cardsContainer");
 const handleAdd = () => {
   const title = titleInput.value;
   const text = textInput.value;
-  if (title.length < 4 || title.length > 20) {
-    alert("The title must be more then 4 and less than 20 letter long.");
+  if (title.length < 3 || title.length > 30) {
+    alert("The title must be more then 3 and less than 30 letter long.");
     return;
   }
-  if (text.length < 25 || text.length > 150) {
-    alert("The description must be more then 25 and less than 75 letter long.");
+  if (text.length < 15 || text.length > 150) {
+    alert(
+      "The description must be more then 15 and less than 150 letter long."
+    );
     return;
   }
   createCard(title, text);
+
+  saveCardData(title, text);
 };
 
 const createCard = (title, text) => {
@@ -22,13 +26,14 @@ const createCard = (title, text) => {
   buttonElement.classList.add("btn", "btn-primary", "btn-xs", "md:btn-sm");
 
   buttonElement.onclick = (event) =>
-    event.target.parentElement.parentElement.remove();
+    event.target.parentElement.parentElement.parentElement.remove();
 
   const buttonDiv = document.createElement("div");
   buttonDiv.classList.add("card-actions", "justify-between");
   buttonDiv.appendChild(buttonElement);
 
   const paragraphElement = document.createElement("p");
+  paragraphElement.classList.add("break-all");
   paragraphElement.innerText = text;
 
   const checkbox = document.createElement("input");
@@ -36,7 +41,7 @@ const createCard = (title, text) => {
   checkbox.type = "checkbox";
 
   const headingElement = document.createElement("h2");
-  headingElement.classList.add("card-title");
+  headingElement.classList.add("card-title", "break-all");
   headingElement.innerText = title;
 
   const headingDiv = document.createElement("div");
@@ -83,3 +88,30 @@ const createCard = (title, text) => {
   titleInput.value = "";
   textInput.value = "";
 };
+
+const saveCardData = (cardTitle, cardText) => {
+  const cardData = { title: cardTitle, text: cardText };
+
+  const oldCardData = localStorage.getItem("CARD_DATA");
+
+  if (!oldCardData) {
+    localStorage.setItem("CARD_DATA", JSON.stringify([cardData]));
+  } else {
+    const oldCardDataParsed = JSON.parse(oldCardData);
+    const updatedCardData = [...oldCardDataParsed, cardData];
+
+    localStorage.setItem("CARD_DATA", JSON.stringify(updatedCardData));
+  }
+};
+
+const loadSavedCards = () => {
+  const savedCardData = localStorage.getItem("CARD_DATA");
+
+  const savedCardDataParsed = JSON.parse(savedCardData);
+
+  for (const cardData of savedCardDataParsed) {
+    createCard(cardData.title, cardData.text);
+  }
+};
+
+loadSavedCards();

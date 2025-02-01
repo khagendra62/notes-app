@@ -25,8 +25,10 @@ const createCard = (title, text) => {
   buttonElement.innerText = "remove";
   buttonElement.classList.add("btn", "btn-primary", "btn-xs", "md:btn-sm");
 
-  buttonElement.onclick = (event) =>
+  buttonElement.onclick = (event) => {
     event.target.parentElement.parentElement.parentElement.remove();
+    removeCardData(title, text);
+  };
 
   const buttonDiv = document.createElement("div");
   buttonDiv.classList.add("card-actions", "justify-between");
@@ -102,6 +104,18 @@ const saveCardData = (cardTitle, cardText) => {
 
     localStorage.setItem("CARD_DATA", JSON.stringify(updatedCardData));
   }
+};
+
+const removeCardData = (cardTitle, cardText) => {
+  const oldCardData = localStorage.getItem("CARD_DATA");
+
+  const oldCardDataParsed = JSON.parse(oldCardData);
+
+  const updatedCardData = oldCardDataParsed.filter(
+    (c) => !(c.title === cardTitle && c.text === cardText)
+  );
+
+  localStorage.setItem("CARD_DATA", JSON.stringify(updatedCardData));
 };
 
 const loadSavedCards = () => {

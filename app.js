@@ -15,12 +15,12 @@ const handleAdd = () => {
     );
     return;
   }
-  createCard(title, text);
+  createCard(title, text, false);
 
   saveCardData(title, text);
 };
 
-const createCard = (title, text) => {
+const createCard = (title, text, defaultChecked) => {
   const buttonElement = document.createElement("button");
   buttonElement.innerText = "remove";
   buttonElement.classList.add("btn", "btn-primary", "btn-xs", "md:btn-sm");
@@ -41,6 +41,7 @@ const createCard = (title, text) => {
   const checkbox = document.createElement("input");
   checkbox.classList.add("checkbox", "checkbox-primary");
   checkbox.type = "checkbox";
+  checkbox.defaultChecked = defaultChecked;
 
   const headingElement = document.createElement("h2");
   headingElement.classList.add("card-title", "break-all");
@@ -57,22 +58,30 @@ const createCard = (title, text) => {
   cardBodyDiv.appendChild(paragraphElement);
   cardBodyDiv.appendChild(buttonDiv);
 
+  const handleTextStrike = (Checked, cardBody) => {
+    const currentCardTitle = cardBody.querySelector(".card-title");
+    const currentCardPara = cardBody.querySelector("p");
+
+    currentCardTitle.style.textDecoration = Checked ? "line-through" : "none";
+    currentCardPara.style.textDecoration = Checked ? "line-through" : "none";
+  };
+
   checkbox.onchange = (event) => {
     const isChecked = event.target.checked;
 
     const currentCardBody =
       event.target.parentElement.parentElement.parentElement;
 
-    const currentCardTitle = currentCardBody.querySelector(".card-title");
-    const currentCardPara = currentCardBody.querySelector("p");
+    const savedCards = JSON.parse(localStorage.getItem("CARD_DATA"));
 
-    if (isChecked) {
-      currentCardTitle.style.textDecoration = "line-through";
-      currentCardPara.style.textDecoration = "line-through";
-    } else {
-      currentCardTitle.style.textDecoration = "none";
-      currentCardPara.style.textDecoration = "none";
+    for (const card of savedCards) {
+      if (card.title === title && card.text === text) {
+        card.isChecked = isChecked;
+      }
     }
+    localStorage.setItem("CARD_DATA", JSON.stringify(savedCards));
+
+    handleTextStrike(isChecked, currentCardBody);
   };
 
   const outerDiv = document.createElement("div");
@@ -83,16 +92,19 @@ const createCard = (title, text) => {
     "md:w-96",
     "shadow-xl"
   );
+
   outerDiv.appendChild(cardBodyDiv);
 
   cardsContainer.appendChild(outerDiv);
 
   titleInput.value = "";
   textInput.value = "";
+
+  handleTextStrike(checkbox.checked, outerDiv);
 };
 
 const saveCardData = (cardTitle, cardText) => {
-  const cardData = { title: cardTitle, text: cardText };
+  const cardData = { title: cardTitle, text: cardText, isChecked: false };
 
   const oldCardData = localStorage.getItem("CARD_DATA");
 
@@ -124,7 +136,7 @@ const loadSavedCards = () => {
   const savedCardDataParsed = JSON.parse(savedCardData);
 
   for (const cardData of savedCardDataParsed) {
-    createCard(cardData.title, cardData.text);
+    createCard(cardData.title, cardData.text, cardData.isChecked);
   }
 };
 
